@@ -14,3 +14,9 @@ fetch(url)
                                                                         </article>
                                                                               </a> `   
 }}); 
+
+document.querySelector('#items').addEventListener("click", getID);
+
+function getID(){
+    
+}
