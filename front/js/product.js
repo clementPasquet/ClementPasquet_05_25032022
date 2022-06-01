@@ -35,24 +35,43 @@ function productDisplayPage(){
 function addToCart(produit){
    let button = document.querySelector("#addToCart");
    let basket =getProduct();
-   let foundProduct =basket.find(p =>p.id === produit.id && p.color === produit.color);
-   console.log(foundProduct);
+  
     button.onclick = () => {
+   let foundProduct =basket.find(p =>p.name === (produit+colors.value));
+   console.log(foundProduct);
+
     if (foundProduct != undefined){
-         foundProduct.quantity=quantity.value
+    if (foundProduct.name === (produit+colors.value)){
+         foundProduct.quantity = parseInt(foundProduct.quantity) + parseInt(quantity.value)
          console.log(foundProduct.quantity);
-    } 
-    else {  
+         localStorage.setItem(`productCart${foundProduct.name}`,JSON.stringify(foundProduct));
+         alert ("panier mis a jour");
+         foundProduct=[];
+    }
+    else if (foundProduct.id===produit && foundProduct.color != colors.value) {
+        foundProduct.color == colors.value
+        foundProduct.name == (produit+colors.value)
+        localStorage.setItem(`productCart${foundProduct.name}`,JSON.stringify(foundProduct));
+        alert('votre produit a bien été ajouté au panier'); 
+        foundProduct=[];     
+    }
+     }
+
+    else { 
+
      if(colors.value !="" && 100 >= quantity.value > 0 ){
         
-       var productCart = {
-             id : produit,
-             color : colors.value,
-             quantity:quantity.value
-        }
+        var productCart = {
+            name :produit+colors.value,
+              id : produit,
+              color : colors.value,
+              quantity:quantity.value,
+             
+         }
+       
         console.log(productCart)
       
-        localStorage.setItem(`productCart${produit}`,JSON.stringify(productCart));
+        localStorage.setItem(`productCart${productCart.name}`,JSON.stringify(productCart));
       alert('votre produit a bien été ajouté au panier');
         
      }
@@ -60,6 +79,7 @@ function addToCart(produit){
         alert('veuillez saisir une couleur et une quantité adaptée.')
      };
     }
+    location.reload();
 }
 
     };
@@ -67,5 +87,8 @@ function addToCart(produit){
 ;    
 
     productDisplayPage();
-     addToCart(produit);
+    
+    
+    
+    addToCart(produit);
     
