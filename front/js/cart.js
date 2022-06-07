@@ -48,6 +48,14 @@ function productDisplay() {
     }
 
 }
+
+function confirm() {
+    let orderButton = document.querySelector("#order");
+    orderButton.addEventListener("click",  sendOrder);
+
+}
+
+
 function sendOrder() {
     
     let firstName = document.getElementById("firstName");
@@ -70,7 +78,7 @@ function sendOrder() {
     }
     if (charRegExp.test(lastName.value )!= true) {
         erreurLastName = "Veuillez renseigner votre nom"
-        alert(erreurLasName)
+        alert(erreurLastName)
 
     }
     if (addressRegExp.test(address.value) != true) {
@@ -90,18 +98,16 @@ function sendOrder() {
     }
 
     else {
-        let contact = {
-            prenom: firstName.value,
-            nom: lastName.value,
-            addresse: address.value,
-            ville: city.value,
+        const contact = {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            address: address.value,
+            city: city.value,
             email: email.value,
 
         }
-
-
-
         console.log(contact);
+
         let products = [];
         let basket = getProduct();
         for (i = 0; i < basket.length; i++) {
@@ -114,17 +120,9 @@ function sendOrder() {
             contact,
             products
         }
-
-        postOrder(sendFormData)
-
-
-    }
-}
-
-
-
-function postOrder(sendFormData) {
-    const send ={
+      console.log(sendFormData)
+  
+    let send ={
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
@@ -132,45 +130,32 @@ function postOrder(sendFormData) {
         body: JSON.stringify(sendFormData),
         
     }
-    const postCommand = () => {
+   const postCommand = () => {
         
     fetch("http://localhost:3000/api/products/order", send)
 
-    .then(async (response) => {
-        try {
-            if (response.ok){
-                console.log("RESPONSE"+ response);
-                const orderData=await response.json()
-                console.log("ORDERDATA"+ orderData);
-                alert("commande validée")
-                window.location.href=`confirmation.html?orderId=${orderData.orderId}`
-            }
-            else {
-                alert("erreur")
-            }
-        
-        }
-        catch (error) {
-            console.log(`erreur de type :${error}`)
-
-        }
-      
+    .then(response => response.json())
+    .then(data => {
+       ;
+        document.location.href = 'confirmation.html?id='+ data.orderId;
     })
-    .catch((error) => 
-        console.log(error));
-    
+    }
+    postCommand();
 }
-postCommand();
-
-}
+    }
 
 
 
-async function confirm() {
-    let orderButton = document.querySelector("#order");
-    orderButton.addEventListener("click", await sendOrder);
+        
+                
 
-}
+
+
+
+
+
+
+
 
 function removeItem(id) {
     console.log(id);
