@@ -2,7 +2,8 @@
 var productId=0;
 
 
-
+// cette fonction recupere les informations sur l'api et cree un objet de la class article pour chaque produit trouve
+// les produits sont ensuites affiches 
 function productDisplay(){
 var url = "http://localhost:3000/api/products";  
 fetch(url)

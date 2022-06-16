@@ -1,3 +1,5 @@
+// on recupere le numero de commande dans l'url et on l'affiche
+
 function displayOrderId (){
     const id = new URL(window.location.href).searchParams.get("id");
 

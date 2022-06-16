@@ -1,5 +1,6 @@
 const urlOrder = "http://localhost:3000/api/products/order"
 
+// cette fonction permet de recuperer le panier
 function getProduct() {
     let local = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -7,7 +8,7 @@ function getProduct() {
     }
     return (local);
 }
-
+// cette fonction recupere le contenu du panier dans le local storage et l'affiche article par article
 function productDisplay() {
     let Local = getProduct();
     for (let i = 0; i < Local.length; i++) {
@@ -49,13 +50,16 @@ function productDisplay() {
 
 }
 
+// cette fonction selectionne le bouton confirmation et fais appel a la fonction sendOrder
 function confirm() {
     let orderButton = document.querySelector("#order");
     orderButton.addEventListener("click",  sendOrder);
 
 }
 
-
+// cette fonction viens tester les valeurs entrées par l'utilisateur pour s'assurer qu'elle sont conforme au fornat attendu
+// elle cree ensuite un objet contenat les valeurs entrées et un tableau d'id au'elle envoie au serveur via la method POST
+// la reponse recue est ensuite passé dans l'url de la page confirmation afin de pouvoir l'afficher , puis nous sommes rediriges
 function sendOrder() {
     
     let firstName = document.getElementById("firstName");
@@ -73,27 +77,28 @@ function sendOrder() {
 
     if (charRegExp.test(firstName.value) != true) {
         console.log(firstName);
-        erreurFirstName = "Veuillez renseigner votre prénom"
-        alert(erreurFirstName)
+        document.querySelector("#fistNameErrorMsg").innerHTML += "Prenom invalide"
+       
     }
     if (charRegExp.test(lastName.value )!= true) {
-        erreurLastName = "Veuillez renseigner votre nom"
-        alert(erreurLastName)
+        
+        document.querySelector("#lastNameErrorMsg").innerHTML += "nom invalide"
+
 
     }
     if (addressRegExp.test(address.value) != true) {
-        erreurAddress = "Veuillez renseigner votre addresse"
-        alert(erreurAddress)
+        document.querySelector("#addressErrorMsg").innerHTML += "adresse invalide"
+        
 
     }
     if (charRegExp.test(city.value) != true) {
-        erreurCity = "Veuillez renseigner votre ville"
-        alert(erreurCity)
+        document.querySelector("#cityErrorMsg").innerHTML += "ville invalide"
+
 
     }
     if (mailRegExp.test(email.value) != true) {
-        erreurMail = "mail invalide"
-        alert(erreurMail)
+        document.querySelector("#emailErrorMsg").innerHTML += "mail invalide"
+
 
     }
 
@@ -145,25 +150,14 @@ function sendOrder() {
     }
 
 
-
-        
-                
-
-
-
-
-
-
-
-
-
+// cette fonction supprime un item a partir de son ID recupere dans le code html
 function removeItem(id) {
     console.log(id);
     localStorage.removeItem(`productCart${id}`)
     alert("produit supprime")
     location.reload()
 }
-
+// cette fonction permet de modifier la quantité dans le panier
 function updateQuantity(id) {
     let quantityButton = document.querySelector("#cart__items");
     quantityButton.addEventListener("change", (e) => {
@@ -186,15 +180,14 @@ function updateQuantity(id) {
     })
 }
 
-function setQuantity(quantity, id) {
-    console.log(basketQuantity)
-    basketQuantity[id][2] = quantity
-
-}
 
 
 
 
+// cette fonction permet de calculer le prix total du panier. 
+// on recupere la quantité de chaque produit dans le localStorage
+//puis on recupere les prix via l'api
+//on calcul ensuite le prix total
 async function totalPrice() {
     var basket = getProduct();
     let basketPrice = 0
@@ -214,6 +207,8 @@ async function totalPrice() {
     }
     return (basketPrice)
 }
+
+// cette fonction affiche le prix total
 async function priceDisplay() {
     let Price = await totalPrice();
     console.log(Price);
