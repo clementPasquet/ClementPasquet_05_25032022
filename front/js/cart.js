@@ -76,29 +76,47 @@ function sendOrder() {
 
 
     if (charRegExp.test(firstName.value) != true) {
-        console.log(firstName);
-        document.querySelector("#fistNameErrorMsg").innerHTML += "Prenom invalide"
+        var erreurFirstName= document.querySelector("#firstNameErrorMsg")
+        if(erreurFirstName != ""){
+            erreurFirstName.innerHTML="";
+        }
+        erreurFirstName.innerHTML += "Prenom invalide"
+        firstName.value="";
        
     }
     if (charRegExp.test(lastName.value )!= true) {
-        
-        document.querySelector("#lastNameErrorMsg").innerHTML += "nom invalide"
-
-
+        var erreurLastName= document.querySelector("#lastNameErrorMsg")
+        if(erreurLastName != ""){
+            erreurLastName.innerHTML="";
+        }
+        erreurLastName.innerHTML += "Nom invalide"
+        lastName.value="";
     }
     if (addressRegExp.test(address.value) != true) {
-        document.querySelector("#addressErrorMsg").innerHTML += "adresse invalide"
+        var erreur= document.querySelector("#addressErrorMsg")
+        if(erreur != ""){
+            erreur.innerHTML="";
+        }
+        erreur.innerHTML += "adresse invalide"
+        address.value="";
         
 
     }
     if (charRegExp.test(city.value) != true) {
-        document.querySelector("#cityErrorMsg").innerHTML += "ville invalide"
-
-
+        var erreurCity= document.querySelector("#cityErrorMsg")
+        if(erreurCity != ""){
+            erreurCity.innerHTML="";
+        }
+        erreurCity.innerHTML += "ville invalide"
+        city.value="";
     }
     if (mailRegExp.test(email.value) != true) {
-        document.querySelector("#emailErrorMsg").innerHTML += "mail invalide"
-
+        var erreurMail= document.querySelector("#emailErrorMsg")
+        if(erreurMail != ""){
+            erreurMail.innerHTML="";
+        }
+        erreurMail.innerHTML += "email invalide"
+        email.value="";
 
     }
 
