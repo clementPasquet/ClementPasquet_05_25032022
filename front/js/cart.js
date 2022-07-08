@@ -57,34 +57,37 @@ function confirm() {
 
 }
 
-// cette fonction viens tester les valeurs entrées par l'utilisateur pour s'assurer qu'elle sont conforme au fornat attendu
-// elle cree ensuite un objet contenat les valeurs entrées et un tableau d'id au'elle envoie au serveur via la method POST
-// la reponse recue est ensuite passé dans l'url de la page confirmation afin de pouvoir l'afficher , puis nous sommes rediriges
-function sendOrder() {
-    
+//cette fonction permet de vérifier les entrées du formulaire avant d'autoriser l'envoi de la requete
+function checkForm(contact){
+
     let firstName = document.getElementById("firstName");
     let lastName = document.getElementById("lastName");
     let address = document.getElementById("address");
     let city = document.getElementById("city");
     let email = document.getElementById("email");
 
-
-     /*new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2-10}$', 'g')*/
-     let mailRegExp =new RegExp(/^[a-z0-9\-_]+[a-z0-9\.\-_]*@{1}[a-z0-9\-_]{2,}\.[a-z\.\-_]+[a-z\-_]+$/i);
-    let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
+    let mailRegExp =new RegExp(/^[a-z0-9\-_]+[a-z0-9\.\-_]*@{1}[a-z0-9\-_]{2,}\.[a-z\.\-_]+[a-z\-_]+$/i);
+    let nameRegExp=new RegExp ("^[A-Z]{1}[a-z ,.'-]+$")
     let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
-
-
-    if (charRegExp.test(firstName.value) != true) {
+    let erreurSaisie=0;
+    
+    if (nameRegExp.test(contact.firstName) != true) {
         var erreurFirstName= document.querySelector("#firstNameErrorMsg")
+        erreurSaisie=1;
         if(erreurFirstName != ""){
             erreurFirstName.innerHTML="";
         }
         erreurFirstName.innerHTML += "Prenom invalide"
         firstName.value="";
-       
+      
     }
-    if (charRegExp.test(lastName.value )!= true) {
+    else{
+        var erreurFirstName= document.querySelector("#firstNameErrorMsg")
+        erreurFirstName.innerHTML="";
+
+    }
+    if (nameRegExp.test(contact.lastName)!= true) {
+        erreurSaisie=1;
         var erreurLastName= document.querySelector("#lastNameErrorMsg")
         if(erreurLastName != ""){
             erreurLastName.innerHTML="";
@@ -92,7 +95,13 @@ function sendOrder() {
         erreurLastName.innerHTML += "Nom invalide"
         lastName.value="";
     }
-    if (addressRegExp.test(address.value) != true) {
+    else{
+        var erreurLastName= document.querySelector("#lastNameErrorMsg")
+        erreurLastName.innerHTML="";
+
+    }
+    if (addressRegExp.test(contact.address) != true) {
+        erreurSaisie=1;
         var erreur= document.querySelector("#addressErrorMsg")
         if(erreur != ""){
             erreur.innerHTML="";
@@ -102,7 +111,13 @@ function sendOrder() {
         
 
     }
-    if (charRegExp.test(city.value) != true) {
+    else{
+        var erreurAddress= document.querySelector("#addressErrorMsg")
+        erreurAddress.innerHTML="";
+
+    }
+    if (nameRegExp.test(contact.city) != true) {
+        erreurSaisie=1;
         var erreurCity= document.querySelector("#cityErrorMsg")
         if(erreurCity != ""){
             erreurCity.innerHTML="";
@@ -110,7 +125,13 @@ function sendOrder() {
         erreurCity.innerHTML += "ville invalide"
         city.value="";
     }
-    if (mailRegExp.test(email.value) != true) {
+    else{
+        var erreurCity= document.querySelector("#cityErrorMsg")
+        erreurCity.innerHTML="";
+
+    }
+    if (mailRegExp.test(contact.email) != true) {
+        erreurSaisie=1;
         var erreurMail= document.querySelector("#emailErrorMsg")
         if(erreurMail != ""){
             erreurMail.innerHTML="";
@@ -119,17 +140,37 @@ function sendOrder() {
         email.value="";
 
     }
+    else{
+        var erreurMail= document.querySelector("#emailErrorMsg")
+        erreurMail.innerHTML="";
 
-    else {
-        const contact = {
-            firstName: firstName.value,
-            lastName: lastName.value,
-            address: address.value,
-            city: city.value,
-            email: email.value,
+    }
+   
+    return (erreurSaisie)
+}
+//cette fonction crée un object avec les informations du formulaire et un tableau des ID des produits contenus dans le panier
+// elle envoie ensuite une requete contenant l'objet et le tableau 
+// enfin elle nous redirige sur la page confirmation en récupérant le numéro de commande dans l'url
+ function sendOrder() {
+    
+    let firstName = document.getElementById("firstName");
+    let lastName = document.getElementById("lastName");
+    let address = document.getElementById("address");
+    let city = document.getElementById("city");
+    let email = document.getElementById("email");
 
-        }
-        console.log(contact);
+    const contact = {
+        firstName: firstName.value,
+        lastName: lastName.value,
+        address: address.value,
+        city: city.value,
+        email: email.value,
+
+    }   
+  let check= checkForm(contact);
+   
+  if(check ==0){
+       
 
         let products = [];
         let basket = getProduct();
@@ -164,6 +205,9 @@ function sendOrder() {
     })
     }
     postCommand();
+}
+else {
+    alert("erreur")
 }
     }
 
@@ -211,16 +255,20 @@ async function totalPrice() {
     let basketPrice = 0
     for (i = 0; i < basket.length; i++) {
 
-        var price = await fetch(`http://localhost:3000/api/products/${basket[i].id} `).then(data => data.json()).then(jsonProduct => { return (jsonProduct.price) })
+        var price = await fetch(`http://localhost:3000/api/products/${basket[i].id} `)
+        .then(data => data.json()).then(jsonProduct => { return (jsonProduct.price) })
 
         parseInt(price);
-        console.log(price)
+        console.log(price);
+
         var basketItem = basket[i];
         var Quantity = parseInt(basketItem.quantity)
-        console.log(Quantity)
+        console.log(Quantity);
+
         var itemPrice = Quantity * price
-        console.log(itemPrice)
-        basketPrice += itemPrice
+        console.log(itemPrice);
+
+        basketPrice += itemPrice;
         console.log(basketPrice);
     }
     return (basketPrice)
