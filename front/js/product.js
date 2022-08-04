@@ -1,6 +1,6 @@
 let produit = window.location.search.split("?id=").join("");
 
-// cette fonction permet de recuperer le panier
+// cette fonction permet de récupérer le panier
 function getProduct() {
   let local = [];
   for (let i = 0; i < localStorage.length; i++) {
@@ -9,7 +9,7 @@ function getProduct() {
   return local;
 }
 
-// cette fonction recupere les données de l'api relative au produit selectionné puis les affiches sur la page web
+// cette fonction récupére les données de l'api relatives au produit selectionné puis les affiches sur la page web
 function productDisplayPage() {
   var url = `http://localhost:3000/api/products/${produit}`;
   fetch(url)
@@ -38,22 +38,22 @@ function productDisplayPage() {
     });
 }
 
-// Cette fonction recoit en parametre le produit de la page et sert a l'ajouter au panier
+// Cette fonction reçoit en paramètre le produit de la page et sert a l'ajouter au panier
 function addToCart(produit) {
   let button = document.querySelector("#addToCart");
-  let basket = getProduct(); // on recupere le contenu du panier
+  let basket = getProduct(); // on recupére le contenu du panier
 
   button.onclick = () => {
-    // au clique on verifie dans un premier temps si le produit existe deja dans le panier grace au name (id+couleur)
+    // au clique on vérifie dans un premier temps si le produit existe deja dans le panier grace au name (id+couleur)
     let foundProduct = basket.find((p) => p.name === produit + colors.value);
     console.log(foundProduct);
-    // si on trouve un produit on regarde si la couleure est la meme . si c'est le cas on modiefiera le produit dans la bonne catégorie
+    // si on trouve un produit on regarde si la couleur est la mème . Si c'est le cas on modifiera le produit dans la bonne catégorie
     if (foundProduct != undefined) {
       if (foundProduct.name === produit + colors.value) {
         foundProduct.quantity =
           parseInt(foundProduct.quantity) + parseInt(quantity.value);
         console.log(foundProduct.quantity);
-        if (foundProduct.quantity <= 100 && quantity.value >= 1 ) {
+        if (foundProduct.quantity <= 100 && quantity.value >= 1) {
           localStorage.setItem(
             `productCart${foundProduct.name}`,
             JSON.stringify(foundProduct)
@@ -69,7 +69,7 @@ function addToCart(produit) {
       ) {
         foundProduct.color == colors.value;
         foundProduct.name == produit + colors.value;
-        if (foundProduct.quantity <= 100 && quantity.value >= 1 ) {
+        if (foundProduct.quantity <= 100 && quantity.value >= 1) {
           localStorage.setItem(
             `productCart${foundProduct.name}`,
             JSON.stringify(foundProduct)
@@ -83,7 +83,7 @@ function addToCart(produit) {
     }
     //sinon on ajoute un nouveau produit au panier en passant par le localStorage
     else {
-      if (colors.value != "" && quantity.value <= 100 && quantity.value >=1) {
+      if (colors.value != "" && quantity.value <= 100 && quantity.value >= 1) {
         var productCart = {
           name: produit + colors.value,
           id: produit,

@@ -1,6 +1,6 @@
 const urlOrder = "http://localhost:3000/api/products/order"
 
-// cette fonction permet de recuperer le panier
+// cette fonction permet de récupérer le panier
 function getProduct() {
     let local = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -8,8 +8,8 @@ function getProduct() {
     }
     return (local);
 }
-// cette fonction recupere le contenu du panier dans le local storage et l'affiche article par article
-function productDisplay() {
+// cette fonction récupére le contenu du panier dans le localStorage et l'affiche article par article
+function productBasketDisplay() {
     let Local = getProduct();
     for (let i = 0; i < Local.length; i++) {
         let Produit = Local[i];
@@ -35,7 +35,8 @@ function productDisplay() {
                                                             <div class="cart__item__content__settings">
                                                                 <div class="cart__item__content__settings__quantity">
                                                                 <p>Qté : </p>
-                                                                <input type="number" class="itemQuantity" id="${Produit.name}"  onchange="updateQuantity(this.id)"  name="itemQuantity" min="1" max="100" value=${Produit.quantity
+                                                                <input type="number" class="itemQuantity" id="${Produit.name}"  onchange="updateQuantity(this.id)"  
+                                                                name="itemQuantity" min="1" max="100" value=${Produit.quantity
                 }>
                                                                 </div>
                                                                 <div class="cart__item__content__settings__delete">
@@ -50,18 +51,14 @@ function productDisplay() {
 
 }
 
-// cette fonction selectionne le bouton confirmation et fais appel a la fonction sendOrder
-async function confirm() {
-    let orderButton = document.querySelector("#order");
-    orderButton.addEventListener("click",  await sendOrder);
-
-}
 
 
-//cette fonction crée un object avec les informations du formulaire et un tableau des ID des produits contenus dans le panier
-// elle envoie ensuite une requete contenant l'objet et le tableau 
-// enfin elle nous redirige sur la page confirmation en récupérant le numéro de commande dans l'url
- async function sendOrder() {
+
+
+//cette fonction crée un object avec les informations du formulaire et un tableau des IDs des produits contenus dans le panier
+// elle envoie ensuite une requète contenant l'objet et le tableau 
+// enfin elle nous redirige sur la page confirmation en récupèrant le numéro de commande dans l'url
+function sendOrder() {
     
     let firstName = document.getElementById("firstName");
     let lastName = document.getElementById("lastName");
@@ -69,7 +66,7 @@ async function confirm() {
     let city = document.getElementById("city");
     let email = document.getElementById("email");
 
-    const contact = {
+    var contact = {
         firstName: firstName.value,
         lastName: lastName.value,
         address: address.value,
@@ -77,16 +74,20 @@ async function confirm() {
         email: email.value,
 
     }   
-   const check= await checkForm(contact);
+   const check= checkForm(contact);
+   console.log(check) ;  
    
   if(check ===0){
-       
 
         let products = [];
         let basket = getProduct();
         for (i = 0; i < basket.length; i++) {
             var productId = basket[i].id
             products.push(productId);
+        }
+        if (products.length ==0 ){
+            alert("votre panier est vide !")
+            location.reload();
         }
         console.log(products);
 
@@ -96,7 +97,7 @@ async function confirm() {
         }
       console.log(sendFormData)
   
-    let send ={
+  let send ={
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
@@ -115,13 +116,15 @@ async function confirm() {
     })
     }
     postCommand();
+
 }
+
 else {
     alert("erreur")
 }
     }
 
-//cette fonction permet de vérifier les entrées du formulaire avant d'autoriser l'envoi de la requete
+//cette fonction permet de vérifier les entrées du formulaire avant d'autoriser l'envoi de la requète
 function checkForm(contact){
 
 
@@ -203,14 +206,14 @@ function checkForm(contact){
     else{
         var erreurMail= document.querySelector("#emailErrorMsg")
         erreurMail.innerHTML="";
-
+       
     }
    
     return (erreurSaisie)
 }
 
 
-// cette fonction supprime un item a partir de son ID recupere dans le code html
+// cette fonction supprime un item à partir de son ID recupéré dans le code html
 function removeItem(id) {
     console.log(id);
     localStorage.removeItem(`productCart${id}`)
@@ -245,8 +248,8 @@ function updateQuantity(id) {
 
 
 // cette fonction permet de calculer le prix total du panier. 
-// on recupere la quantité de chaque produit dans le localStorage
-//puis on recupere les prix via l'api
+// on recupere la quantité de chaque produits dans le localStorage
+//puis on recupère les prix via l'api
 //on calcul ensuite le prix total
 async function totalPrice() {
     var basket = getProduct();
@@ -280,6 +283,6 @@ async function priceDisplay() {
     prix.innerHTML += `${Price}`
 }
 
-productDisplay();
+productBasketDisplay();
 priceDisplay();
-confirm();
+
