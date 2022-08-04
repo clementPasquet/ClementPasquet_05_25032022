@@ -53,7 +53,7 @@ function addToCart(produit) {
         foundProduct.quantity =
           parseInt(foundProduct.quantity) + parseInt(quantity.value);
         console.log(foundProduct.quantity);
-        if (foundProduct.quantity <= 100) {
+        if (foundProduct.quantity <= 100 && quantity.value >= 1 ) {
           localStorage.setItem(
             `productCart${foundProduct.name}`,
             JSON.stringify(foundProduct)
@@ -69,7 +69,7 @@ function addToCart(produit) {
       ) {
         foundProduct.color == colors.value;
         foundProduct.name == produit + colors.value;
-        if (foundProduct.quantity <= 100) {
+        if (foundProduct.quantity <= 100 && quantity.value >= 1 ) {
           localStorage.setItem(
             `productCart${foundProduct.name}`,
             JSON.stringify(foundProduct)
@@ -83,7 +83,7 @@ function addToCart(produit) {
     }
     //sinon on ajoute un nouveau produit au panier en passant par le localStorage
     else {
-      if (colors.value != "" && 100 >= quantity.value > 0) {
+      if (colors.value != "" && quantity.value <= 100 && quantity.value >=1) {
         var productCart = {
           name: produit + colors.value,
           id: produit,

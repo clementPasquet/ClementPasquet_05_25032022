@@ -51,20 +51,80 @@ function productDisplay() {
 }
 
 // cette fonction selectionne le bouton confirmation et fais appel a la fonction sendOrder
-function confirm() {
+async function confirm() {
     let orderButton = document.querySelector("#order");
-    orderButton.addEventListener("click",  sendOrder);
+    orderButton.addEventListener("click",  await sendOrder);
 
 }
 
-//cette fonction permet de vérifier les entrées du formulaire avant d'autoriser l'envoi de la requete
-function checkForm(contact){
 
+//cette fonction crée un object avec les informations du formulaire et un tableau des ID des produits contenus dans le panier
+// elle envoie ensuite une requete contenant l'objet et le tableau 
+// enfin elle nous redirige sur la page confirmation en récupérant le numéro de commande dans l'url
+ async function sendOrder() {
+    
     let firstName = document.getElementById("firstName");
     let lastName = document.getElementById("lastName");
     let address = document.getElementById("address");
     let city = document.getElementById("city");
     let email = document.getElementById("email");
+
+    const contact = {
+        firstName: firstName.value,
+        lastName: lastName.value,
+        address: address.value,
+        city: city.value,
+        email: email.value,
+
+    }   
+   const check= await checkForm(contact);
+   
+  if(check ===0){
+       
+
+        let products = [];
+        let basket = getProduct();
+        for (i = 0; i < basket.length; i++) {
+            var productId = basket[i].id
+            products.push(productId);
+        }
+        console.log(products);
+
+        const sendFormData = {
+            contact,
+            products
+        }
+      console.log(sendFormData)
+  
+    let send ={
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sendFormData),
+        
+    }
+   const postCommand = () => {
+        
+    fetch("http://localhost:3000/api/products/order", send)
+
+    .then(response => response.json())
+    .then(data => {
+       ;
+        document.location.href = 'confirmation.html?id='+ data.orderId;
+    })
+    }
+    postCommand();
+}
+else {
+    alert("erreur")
+}
+    }
+
+//cette fonction permet de vérifier les entrées du formulaire avant d'autoriser l'envoi de la requete
+function checkForm(contact){
+
+
 
     let mailRegExp =new RegExp(/^[a-z0-9\-_]+[a-z0-9\.\-_]*@{1}[a-z0-9\-_]{2,}\.[a-z\.\-_]+[a-z\-_]+$/i);
     let nameRegExp=new RegExp ("^[A-Z]{1}[a-z ,.'-]+$")
@@ -148,68 +208,6 @@ function checkForm(contact){
    
     return (erreurSaisie)
 }
-//cette fonction crée un object avec les informations du formulaire et un tableau des ID des produits contenus dans le panier
-// elle envoie ensuite une requete contenant l'objet et le tableau 
-// enfin elle nous redirige sur la page confirmation en récupérant le numéro de commande dans l'url
- function sendOrder() {
-    
-    let firstName = document.getElementById("firstName");
-    let lastName = document.getElementById("lastName");
-    let address = document.getElementById("address");
-    let city = document.getElementById("city");
-    let email = document.getElementById("email");
-
-    const contact = {
-        firstName: firstName.value,
-        lastName: lastName.value,
-        address: address.value,
-        city: city.value,
-        email: email.value,
-
-    }   
-  let check= checkForm(contact);
-   
-  if(check ==0){
-       
-
-        let products = [];
-        let basket = getProduct();
-        for (i = 0; i < basket.length; i++) {
-            var productId = basket[i].id
-            products.push(productId);
-        }
-        console.log(products);
-
-        const sendFormData = {
-            contact,
-            products
-        }
-      console.log(sendFormData)
-  
-    let send ={
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(sendFormData),
-        
-    }
-   const postCommand = () => {
-        
-    fetch("http://localhost:3000/api/products/order", send)
-
-    .then(response => response.json())
-    .then(data => {
-       ;
-        document.location.href = 'confirmation.html?id='+ data.orderId;
-    })
-    }
-    postCommand();
-}
-else {
-    alert("erreur")
-}
-    }
 
 
 // cette fonction supprime un item a partir de son ID recupere dans le code html
